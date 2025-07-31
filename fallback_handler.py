@@ -1,20 +1,23 @@
 from fhir.resources.observation import Observation
 from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.quantity import Quantity
-from fhir.resources.fhirtypes import ReferenceType
+
 
 def handle_unknown_field(field, value, uhid, meaning):
     subject = {"reference": f"Patient/{uhid}"}
     code = CodeableConcept.construct(text=meaning)
 
-    if isinstance(value, (int, float)):
+    try:
+        # Attempt to convert to float if it's a numeric-looking string
+        numeric_value = float(value)
         return Observation(
             status="final",
             code=code,
-            valueQuantity=Quantity(value=value),
+            valueQuantity=Quantity.construct(value=numeric_value),
             subject=subject
         )
-    else:
+    except (ValueError, TypeError):
+        # Fall back to string if it's not convertible
         return Observation(
             status="final",
             code=code,
