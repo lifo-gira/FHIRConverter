@@ -67,3 +67,11 @@ def convert_and_validate(data: Dict[str, Any]):
             "valid": result.returncode == 0
         }
     }
+
+@app.get("/java-check")
+def java_check():
+    try:
+        result = subprocess.run(["java", "-version"], capture_output=True, text=True)
+        return {"stdout": result.stdout, "stderr": result.stderr}
+    except Exception as e:
+        return {"error": str(e)}
