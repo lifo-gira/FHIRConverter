@@ -11,6 +11,11 @@ app = FastAPI()
 
 FHIR_VALIDATOR_PATH = "./fhir/validator_cli.jar"  # Adjust path as needed
 
+@app.get("/")
+def root():
+    return {"message": "FHIR Converter is running"}
+
+
 # --- API 1: Convert only ---
 @app.post("/convert")
 def convert_only(data: Dict[str, Any]):
